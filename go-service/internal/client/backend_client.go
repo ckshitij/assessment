@@ -13,9 +13,9 @@ import (
 )
 
 const (
-	accesTokenName   = "accessToken"
-	refreshTokenName = "refreshToken"
-	csrfTokenName    = "csrfToken"
+	AccesTokenName   = "accessToken"
+	RefreshTokenName = "refreshToken"
+	CSFRTokenName    = "csrfToken"
 )
 
 type BackendClient struct {
@@ -53,13 +53,13 @@ func (b *BackendClient) Login(ctx context.Context, username, password string) ([
 	var cookies []*http.Cookie
 	// Extract csrfToken, accessToken and refreshToken from cookies
 	for _, c := range resp.Cookies() {
-		if c.Name == csrfTokenName && c.Value != "" {
+		if c.Name == CSFRTokenName && c.Value != "" {
 			cookies = append(cookies, c)
 		}
-		if c.Name == accesTokenName && c.Value != "" {
+		if c.Name == AccesTokenName && c.Value != "" {
 			cookies = append(cookies, c)
 		}
-		if c.Name == refreshTokenName && c.Value != "" {
+		if c.Name == RefreshTokenName && c.Value != "" {
 			cookies = append(cookies, c)
 		}
 	}
@@ -73,7 +73,7 @@ func (b *BackendClient) GetStudentByID(ctx context.Context, id int, rawCookies [
 
 	req, _ := http.NewRequestWithContext(ctx, "GET", url, nil)
 	for _, c := range rawCookies {
-		if c.Name == csrfTokenName {
+		if c.Name == CSFRTokenName {
 			csrfToken = c.Value
 		}
 		req.AddCookie(c)

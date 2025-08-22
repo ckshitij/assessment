@@ -13,6 +13,7 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 
 	"goservice/configs"
+	"goservice/internal/auth"
 	"goservice/internal/client"
 	"goservice/internal/student"
 	"log"
@@ -23,8 +24,11 @@ func main() {
 	conf := configs.Load()
 
 	backend := client.NewBackendClient(conf.NodeServer.BaseURL)
-	studentsrv := student.NewService(backend, conf.NodeServer.Username, conf.NodeServer.Password)
-	handler := student.NewHandler(studentsrv)
+
+	studentsrv := student.NewService(backend)
+	studentHdlr := student.NewHandler(studentsrv)
+
+	authHandler := auth.NewHandler(backend)
 
 	r := chi.NewRouter()
 
@@ -33,7 +37,8 @@ func main() {
 	r.Use(middleware.RequestID)
 	r.Use(middleware.Logger)
 
-	r.Mount("/api/v1", handler.Routes())
+	r.Mount("/api/v1/auth", authHandler.Routes())
+	r.Mount("/api/v1/students", studentHdlr.Routes())
 
 	addr := fmt.Sprintf("%s:%d", conf.AppServer.Host, conf.AppServer.Port)
 

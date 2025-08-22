@@ -12,9 +12,7 @@ type Server struct {
 }
 
 type Backend struct {
-	BaseURL  string `mapstructure:"baseurl"`
-	Username string `mapstructure:"username"`
-	Password string `mapstructure:"password"`
+	BaseURL string `mapstructure:"baseurl"`
 }
 
 type Config struct {

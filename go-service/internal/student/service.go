@@ -6,13 +6,15 @@ import (
 	"goservice/internal/client"
 	"goservice/internal/models"
 	"io"
+	"net/http"
 
 	"github.com/jung-kurt/gofpdf"
 )
 
 type Service interface {
-	GetStudent(ctx context.Context, id int) (*models.Student, error)
-	GenerateReport(ctx context.Context, id int) (ReportWriter, error)
+	GetStudent(ctx context.Context, id int, authCookies []*http.Cookie) (*models.Student, error)
+	GenerateReport(ctx context.Context, id int, authCookies []*http.Cookie) (ReportWriter, error)
+	Login(ctx context.Context, username, password string) ([]*http.Cookie, error)
 }
 
 type service struct {
@@ -25,20 +27,20 @@ type ReportWriter interface {
 	Output(w io.Writer) error
 }
 
-func NewService(b *client.BackendClient, user, pass string) Service {
-	return &service{backend: b, username: user, password: pass}
+func NewService(b *client.BackendClient) Service {
+	return &service{backend: b}
 }
 
-func (s *service) GetStudent(ctx context.Context, id int) (*models.Student, error) {
-	cookies, err := s.backend.Login(ctx, s.username, s.password)
-	if err != nil {
-		return nil, err
-	}
-	return s.backend.GetStudentByID(ctx, id, cookies)
+func (s *service) Login(ctx context.Context, username, password string) ([]*http.Cookie, error) {
+	return s.backend.Login(ctx, username, password)
 }
 
-func (s *service) GenerateReport(ctx context.Context, id int) (ReportWriter, error) {
-	student, err := s.GetStudent(ctx, id)
+func (s *service) GetStudent(ctx context.Context, id int, authCookies []*http.Cookie) (*models.Student, error) {
+	return s.backend.GetStudentByID(ctx, id, authCookies)
+}
+
+func (s *service) GenerateReport(ctx context.Context, id int, authCookies []*http.Cookie) (ReportWriter, error) {
+	student, err := s.GetStudent(ctx, id, authCookies)
 	if err != nil {
 		return nil, err
 	}

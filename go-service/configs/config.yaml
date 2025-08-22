@@ -4,6 +4,4 @@ server:
 
 backend:
   baseURL: "http://localhost:5007"
-  username: "admin@school-admin.com"
-  password: "3OU4zn3q6Zh9"
 

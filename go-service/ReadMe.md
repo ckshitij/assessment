@@ -42,9 +42,25 @@ server:
 # using the same demo account using the login cred to use login flow.
 backend:
   baseURL: "http://localhost:5007"
-  username: "admin@school-admin.com"
-  password: "3OU4zn3q6Zh9"
 
 ```
 
+### API call using curl utility
 
+- Login using the demo user mentioned in `backend` service and store the required cookies
+```sh
+curl -X POST http://localhost:5008/api/v1/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"admin@school-admin.com","password":"3OU4zn3q6Zh9"}' \
+  -c cookies.txt
+```
+
+- Use the cookie and get student report for a given ID(2)
+```sh
+curl -X GET http://localhost:5008/api/v1/students/2/report -b cookies.txt -o report.pdf
+```
+
+- Use the cookie and get student details for a given ID
+```sh
+curl -X GET http://localhost:5008/api/v1/students/2 -b cookies.txt
+```
