@@ -1,6 +1,7 @@
 # Go-Service - Student Report Generation
 
 Go service which will generate the Student Report in PDF format.
+Not explicit auth added, internally utilizing the `/api/v1/auth/login` with demo user and password mentioned in the config by the `backend` service.
 
 ## 🚀 Quick Start
 

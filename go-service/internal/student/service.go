@@ -5,19 +5,24 @@ import (
 	"fmt"
 	"goservice/internal/client"
 	"goservice/internal/models"
+	"io"
 
 	"github.com/jung-kurt/gofpdf"
 )
 
 type Service interface {
 	GetStudent(ctx context.Context, id int) (*models.Student, error)
-	GenerateReport(ctx context.Context, id int) (*gofpdf.Fpdf, error)
+	GenerateReport(ctx context.Context, id int) (ReportWriter, error)
 }
 
 type service struct {
 	backend  *client.BackendClient
 	username string
 	password string
+}
+
+type ReportWriter interface {
+	Output(w io.Writer) error
 }
 
 func NewService(b *client.BackendClient, user, pass string) Service {
@@ -32,16 +37,16 @@ func (s *service) GetStudent(ctx context.Context, id int) (*models.Student, erro
 	return s.backend.GetStudentByID(ctx, id, cookies)
 }
 
-func (s *service) GenerateReport(ctx context.Context, id int) (*gofpdf.Fpdf, error) {
+func (s *service) GenerateReport(ctx context.Context, id int) (ReportWriter, error) {
 	student, err := s.GetStudent(ctx, id)
 	if err != nil {
 		return nil, err
 	}
 
-	return GeneratePDF(student), nil
+	return generatePDF(student), nil
 }
 
-func GeneratePDF(student *models.Student) *gofpdf.Fpdf {
+func generatePDF(student *models.Student) *gofpdf.Fpdf {
 	pdf := gofpdf.New("P", "mm", "A4", "")
 	pdf.AddPage()
 
