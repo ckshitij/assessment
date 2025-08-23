@@ -96,5 +96,8 @@ func (h *Handler) GenerateReport(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/pdf")
 	w.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=student_%d_report.pdf", id))
 	w.WriteHeader(http.StatusOK)
-	pdf.Output(w)
+	if err := pdf.Output(w); err != nil {
+		response.Error(w, http.StatusInternalServerError, err)
+		return
+	}
 }

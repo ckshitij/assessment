@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"goservice/internal/models"
 	"io"
-	"log"
 	"net/http"
 	"strings"
 	"time"
@@ -23,7 +22,12 @@ type BackendClient struct {
 	Client  *http.Client
 }
 
-func NewBackendClient(baseURL string) *BackendClient {
+type IBackend interface {
+	Login(ctx context.Context, username, password string) ([]*http.Cookie, error)
+	GetStudentByID(ctx context.Context, id int, rawCookies []*http.Cookie) (*models.Student, error)
+}
+
+func NewBackendClient(baseURL string) IBackend {
 	return &BackendClient{
 		BaseURL: baseURL,
 		Client:  &http.Client{Timeout: 10 * time.Second},
@@ -33,8 +37,6 @@ func NewBackendClient(baseURL string) *BackendClient {
 func (b *BackendClient) Login(ctx context.Context, username, password string) ([]*http.Cookie, error) {
 	loginURL := fmt.Sprintf("%s/api/v1/auth/login", b.BaseURL)
 	payload := fmt.Sprintf(`{"username":"%s","password":"%s"}`, username, password)
-
-	log.Println(loginURL)
 
 	req, _ := http.NewRequestWithContext(ctx, "POST", loginURL, strings.NewReader(payload))
 	req.Header.Set("Content-Type", "application/json")

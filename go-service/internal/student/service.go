@@ -18,16 +18,14 @@ type Service interface {
 }
 
 type service struct {
-	backend  *client.BackendClient
-	username string
-	password string
+	backend client.IBackend
 }
 
 type ReportWriter interface {
 	Output(w io.Writer) error
 }
 
-func NewService(b *client.BackendClient) Service {
+func NewService(b client.IBackend) Service {
 	return &service{backend: b}
 }
 

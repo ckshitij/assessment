@@ -10,10 +10,10 @@ import (
 )
 
 type Handler struct {
-	client *client.BackendClient
+	client client.IBackend
 }
 
-func NewHandler(s *client.BackendClient) *Handler {
+func NewHandler(s client.IBackend) *Handler {
 	return &Handler{client: s}
 }
 

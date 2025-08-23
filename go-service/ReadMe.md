@@ -13,11 +13,53 @@ Not explicit auth added, internally utilizing the `/api/v1/auth/login` with demo
 
 ### Installation & Setup
 
-- Use Make
+#### Makefile Commands
 
-```bash
-make start
-```
+- **init**  
+  Installs Go module dependencies and tidies up `go.mod`/`go.sum`.
+  ```sh
+  make init
+  ```
+
+- **build**  
+  Builds the project binary (`report_srv`).
+  ```sh
+  make build
+  ```
+
+- **install-dep**  
+  Downloads Go modules and installs development tools (`staticcheck`, `gosec`, `golangci-lint`).
+  ```sh
+  make install-dep
+  ```
+
+- **start**  
+  Formats code, builds the binary, and starts the server.
+  ```sh
+  make start
+  ```
+
+- **test**  
+  Runs all tests with coverage.
+  ```sh
+  make test
+  ```
+
+- **lint**  
+  Runs `golangci-lint` on the codebase.
+  ```sh
+  make lint
+  ```
+
+- **security**  
+  Runs `staticcheck` and `gosec` for static analysis and security checks.
+  ```sh
+  make security
+  ```
+
+- **fmt**  
+  Formats all Go files in the project.
+
 - Without Make
 ```bash
 # Install dependencies
